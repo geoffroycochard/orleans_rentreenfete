@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>gal</title>
+<title>Rentrée en fête - Trouver une association - www.orleans.fr</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
 <style type="text/css">
 html { overflow: hidden; }
 body { overflow: hidden; padding: 0; margin: 0;
@@ -34,12 +40,16 @@ body { background: #f4f4f4;}
     #search {
         width: 300px;
         position: fixed;
-        top: 0;
-        left: 0;
-        background-color: #ffffff;
+        top: 20px;
+        left: 20px;
 
     }
     #search ul {
+        background-color: #ffffff;
+    }
+
+    #results-container {
+        overflow-y: scroll;
     }
 </style>
 <!--[if lte IE 6]>
@@ -167,7 +177,7 @@ function init() {
 $(document).ready(function(){
     $('#_s').on('input',function(){
 
-        $('#results li').remove();
+        $('#results a').remove();
 
 
         for (var i = 0; i < markers.length; i++) {
@@ -189,10 +199,13 @@ $(document).ready(function(){
 
                     (function(r){
 
+                    l_content = '<span class="badge">' + r.nostand + '</span>' +
+                    '<h4 class="list-group-item-heading">' + r.sigle + '</h4>' +
+                    '<p class="list-group-item-text">' + r.clairecie + ' / ' + r.clairrub1 + '</p>';
 
-
-                    $('<li>').text(r.sigle + ' - ' + places[p].nostand)
+                    $('<a>').html(l_content)
                             .css('cursor', 'pointer')
+                            .addClass('list-group-item')
                             .appendTo('#results')
                             .on('click',function(){
                                 console.log(r.no);
@@ -232,6 +245,18 @@ $(document).ready(function(){
 
                     })(r);
                 }
+                // Calculate results container to overflow
+                var d_h = $(document).height();
+                var r_h = $('ul#results').height();
+                if(r_h > d_h)
+                {
+                    $('#results-container').height(d_h - 100);
+                }
+                else
+                {
+                    $('#results-container').height('auto');
+                }
+
 
             }
         });
@@ -254,11 +279,19 @@ var bindInfoWindow = function(marker, map, infowindow, html) {
 </script>
 </head>
 <body onload="init()">
-<div id="footer">Generated with <a href="http://www.maptiler.com/">MapTiler</a></div>
+
 <div id="map"></div>
+
 <div id="search">
-    <input type="text" id="_s" placeholder="rechercher"/>
-    <ul id="results"></ul>
+    <form>
+        <div class="form-group">
+            <input type="text" class="form-control" id="_s" placeholder="Recherche">
+        </div>
+    </form>
+    <div id="results-container">
+        <ul id="results" class="list-group"></ul>
+    </div>
 </div>
+
 </body>
 </html>

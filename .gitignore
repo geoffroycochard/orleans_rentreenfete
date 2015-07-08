@@ -1,0 +1,5 @@
+.DS_Store
+.idea
+/bo/var/cache/
+/bo/var/logs/
+/vendor/

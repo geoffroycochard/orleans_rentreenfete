@@ -35,7 +35,7 @@ $app->get('/search', function(Request $request) use ($app) {
     $s = $request->get('s');
 
     $stmt = $app['db']->prepare('
-      SELECT a.no, a.sigle, s.nostand AS ref, a.nostand, s.lat, s.lng
+      SELECT a.no, a.sigle, s.nostand AS ref, a.nostand, s.lat, s.lng, a.clairecie, a.clairrub1
       FROM ref_assos a LEFT JOIN ref_stand s ON s.nostand = a.nostand
       WHERE a.sigle LIKE ? OR a.objet LIKE ?');
 
