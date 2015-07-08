@@ -3,7 +3,7 @@
 <head>
 <title>Rentrée en fête - Trouver une association - www.orleans.fr</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-
+<meta charset="UTF-8"/>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <!-- Optional theme -->
@@ -105,10 +105,10 @@ function init() {
     };
 	map = new google.maps.Map(document.getElementById("map"), opts);
 	map.setMapTypeId('satellite');
-	map.overlayMapTypes.insertAt(0, maptiler);
+	//map.overlayMapTypes.insertAt(0, maptiler);
 
 }
-
+    /*
     function placeMarkers(){
 
         for (var i = 0; i < markers.length; i++) {
@@ -173,7 +173,7 @@ function init() {
             }
         });
     }
-
+    */
 $(document).ready(function(){
     $('#_s').on('input',function(){
 
@@ -224,6 +224,10 @@ $(document).ready(function(){
 
                                         var marker = new MarkerWithLabel({
                                             map: map,
+                                            icon: {
+                                                path: google.maps.SymbolPath.CIRCLE,
+                                                scale: 10
+                                            },
                                             ref_id: place.ref,
                                             position: tmpLatLng,
                                             labelContent: place.ref,
