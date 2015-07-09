@@ -36,7 +36,11 @@ body { background: #f4f4f4;}
     .labels.noasso {
         background-color: red;
     }
-
+    .btn-search {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+    }
     #search {
         width: 300px;
         position: fixed;
@@ -188,15 +192,14 @@ $(document).ready(function(){
 
                                             // Close search
                                             var button = $('<button>')
-                                                    .addClass('btn btn-primary')
-                                                    .text('Voir la liste')
+                                                    .addClass('btn btn-primary btn-search')
+                                                    .text('Recherche')
                                                     .on('click', function(){
-                                                        console.log('coucou');
-                                                        $('#results-container #results').show();
+                                                        $('#search').show();
                                                         $(this).remove();
                                                     });
 
-                                            $('#results-container #results')
+                                            $('#search')
                                                     .hide()
                                                     .parent()
                                                     .append(button);
