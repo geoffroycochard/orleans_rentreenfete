@@ -30,8 +30,14 @@ $app->get('/get', function(Request $request) use ($app) {
     return $app->json($res);
 });
 
-$app->get('/delete', function(Request $request) use ($app) {
-    $res = $app['db']->delete('ref_stand', array('nostand' => $request->get('ref')));
+$app->get('/{key}/delete', function($key) use ($app) {
+
+    if( $key != $app['api_key']) {
+        throw new Exception('Error api key');
+    }
+
+    $res = $app['db']->delete('ref_stand', array('nostand' => $app['request']->get('ref')));
+
     return $app->json($res);
 });
 
@@ -52,31 +58,37 @@ $app->get('/search', function(Request $request) use ($app) {
     return $app->json($res);
 });
 
-$app->get('/save', function(Request $request) use ($app) {
+$app->get('/{key}/save', function($key) use ($app) {
+
+    if( $key != $app['api_key']) {
+        throw new Exception('Error api key');
+    }
+
 
     $sql = "SELECT * FROM ref_stand WHERE nostand = ?";
-    $s = $app['db']->fetchAssoc($sql, array($request->get('nostand')));
+
+    $s = $app['db']->fetchAssoc($sql, array($app['request']->get('nostand')));
 
     //
     if(!$s)
     {
         $s = $app['db']->insert('ref_stand', array(
-          'nostand' => $request->get('nostand'),
-          'lat' => $request->get('lat'),
-          'lng' => $request->get('lng')
+          'nostand' => $app['request']->get('nostand'),
+          'lat' => $app['request']->get('lat'),
+          'lng' => $app['request']->get('lng')
         ));
     }
     else
     {
         $s = $app['db']->update('ref_stand', array(
-            'lat' => $request->get('lat'),
-            'lng' => $request->get('lng')
-        ),array('nostand' => $request->get('nostand'))
+            'lat' => $app['request']->get('lat'),
+            'lng' => $app['request']->get('lng')
+        ),array('nostand' => $app['request']->get('nostand'))
         );
     }
 
     $sql = "SELECT  a.*, s.*, s.nostand AS ref FROM ref_stand s LEFT JOIN ref_assos a ON s.nostand = a.nostand WHERE s.nostand = ?";
-    $s = $app['db']->fetchAssoc($sql, array($request->get('nostand')));
+    $s = $app['db']->fetchAssoc($sql, array($app['request']->get('nostand')));
 
     return $app->json($s);
 });

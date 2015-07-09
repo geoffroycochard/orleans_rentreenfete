@@ -24,13 +24,19 @@ $app->register(new DoctrineServiceProvider(), array(
 ));
 
 $app['twig'] = $app->extend('twig', function ($twig, $app) {
-
     // add custom globals, filters, tags, ...
+
     $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) use ($app) {
         return $app['request_stack']->getMasterRequest()->getBasepath().'/'.ltrim($asset, '/');
     }));
 
     return $twig;
+});
+
+$app['api_key'] = '7tA7ou224f9JNs7qCSgF7907F4g50mHy';
+
+$app['request'] = $app->factory(function ($app) {
+    return $app['request_stack']->getCurrentRequest();
 });
 
 return $app;

@@ -103,7 +103,7 @@ var bindInfoWindow = function(marker, map, infowindow, html) {
         $('.delete-pin').on('click', function(e){
             e.preventDefault();
             $.ajax({
-                url: config.appUrl + '/delete',
+                url: config.appUrl + '/' + config.apiKey + '/delete',
                 data: { ref: marker.ref_id },
                 success: function(){
                     boxMessage('Success deleted');
@@ -149,7 +149,7 @@ function init() {
         {
             // populate yor box/field with lat, lng
             $.ajax({
-                url: config.appUrl + '/save',
+                url: config.appUrl + '/' + config.apiKey + '/save',
                 data: { lat: lat, lng: lng, nostand: no },
                 success: function(place){
                     boxMessage('Success created');
@@ -191,7 +191,7 @@ function placeMarker(place){
     (function(marker){
         google.maps.event.addListener(marker, 'dragend', function(evt) {
             $.ajax({
-                url: config.appUrl + '/save',
+                url: config.appUrl + '/' + config.apiKey + '/save',
                 data: { lat: marker.getPosition().lat(), lng: marker.getPosition().lng(), nostand: marker.ref_id },
                 success: function(res){
                     boxMessage('Success updated');
