@@ -30,6 +30,11 @@ $app->get('/get', function(Request $request) use ($app) {
     return $app->json($res);
 });
 
+$app->get('/delete', function(Request $request) use ($app) {
+    $res = $app['db']->delete('ref_stand', array('nostand' => $request->get('ref')));
+    return $app->json($res);
+});
+
 $app->get('/search', function(Request $request) use ($app) {
 
     $s = $request->get('s');

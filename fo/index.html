@@ -97,6 +97,7 @@ var maptiler = new google.maps.ImageMapType({
 
     opacity: 1.0
 });
+
 function init() {
     var opts = {
         streetViewControl: false,
@@ -108,72 +109,7 @@ function init() {
 	//map.overlayMapTypes.insertAt(0, maptiler);
 
 }
-    /*
-    function placeMarkers(){
 
-        for (var i = 0; i < markers.length; i++) {
-            markers[i].setMap(null);
-            console.log(i);
-        }
-        markers = [];
-
-        $.ajax({
-            dataType: "json",
-            url: config.appUrl + '/list',
-            success: function(places){
-
-                var infowindow =  new google.maps.InfoWindow({
-                    content: ''
-                });
-
-                for (p in places) {
-
-                    //create gmap latlng obj
-                    tmpLatLng = new google.maps.LatLng( places[p].lat, places[p].lng);
-
-                    // make and place map maker.
-                    classes = 'labels';
-                    if(places[p].no == null)
-                    {
-                        classes += ' noasso';
-                    }
-                    
-                    var marker = new MarkerWithLabel({
-                        map: map,
-                        ref_id: places[p].ref,
-                        position: tmpLatLng,
-                        labelContent: places[p].ref,
-                        labelAnchor: new google.maps.Point(20, 30),
-                        labelClass: classes, // the CSS class for the label
-                        labelStyle: {opacity: 0.75},
-                        draggable: true,
-                        title : places[p].sigle + "<br>" + places[p].ref
-                    });
-
-                    bindInfoWindow(marker, map, infowindow, '<b>'+places[p].sigle + "</b><br>" + places[p].ref);
-
-                    (function(marker){
-                        google.maps.event.addListener(marker, 'dragend', function(evt) {
-                            $.ajax({
-                                url: config.appUrl + '/save',
-                                data: { lat: marker.getPosition().lat(), lng: marker.getPosition().lng(), nostand: marker.ref_id },
-                                success: function(res){
-                                    console.log('success update');
-                                    placeMarkers();
-                                }
-                            });
-                        } );
-                    })(marker);
-
-
-                    // not currently used but good to keep track of markers
-                    markers.push(marker);
-
-                }
-            }
-        });
-    }
-    */
 $(document).ready(function(){
     $('#_s').on('input',function(){
 
@@ -200,15 +136,21 @@ $(document).ready(function(){
                     (function(r){
 
                     l_content = '<span class="badge">' + r.nostand + '</span>' +
-                    '<h4 class="list-group-item-heading">' + r.sigle + '</h4>' +
-                    '<p class="list-group-item-text">' + r.clairecie + ' / ' + r.clairrub1 + '</p>';
+                        '<h4 class="list-group-item-heading">' + r.sigle + '</h4>' +
+                        '<p class="list-group-item-text">' + r.clairecie + ' / ' + r.clairrub1 + '</p>';
 
                     $('<a>').html(l_content)
                             .css('cursor', 'pointer')
                             .addClass('list-group-item')
                             .appendTo('#results')
                             .on('click',function(){
-                                console.log(r.no);
+
+                                for(i in markers)
+                                {
+                                    markers[i].setMap(null);
+                                }
+                                markers = [];
+
                                 $.ajax({
                                     dataType: "json",
                                     url: config.appUrl + '/get',
@@ -240,6 +182,25 @@ $(document).ready(function(){
                                         bindInfoWindow(marker, map, infowindow, '<b>'+place.sigle + "</b><br>" + place.objet);
                                         map.setCenter(tmpLatLng);
                                         map.setZoom(20);
+
+
+                                        if( $(document).width() < 900 ) {
+
+                                            // Close search
+                                            var button = $('<button>')
+                                                    .addClass('btn btn-primary')
+                                                    .text('Voir la liste')
+                                                    .on('click', function(){
+                                                        console.log('coucou');
+                                                        $('#results-container #results').show();
+                                                        $(this).remove();
+                                                    });
+
+                                            $('#results-container #results')
+                                                    .hide()
+                                                    .parent()
+                                                    .append(button);
+                                        }
                                     }
 
                                 })
@@ -274,10 +235,11 @@ $(document).ready(function(){
 
 // binds a map marker and infoWindow together on click
 var bindInfoWindow = function(marker, map, infowindow, html) {
+    infowindow.setContent(html);
     google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(html);
         infowindow.open(map, marker);
     });
+    infowindow.open(map, marker);
 }
 
 </script>

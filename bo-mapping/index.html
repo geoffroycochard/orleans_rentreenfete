@@ -89,7 +89,6 @@ var maptiler = new google.maps.ImageMapType({
 });
 
 var boxMessage = function(msg) {
-    console.log(msg);
     b = $('#box-message p').text(msg).parent().show(400, function(){
         $(this).fadeOut(1000);
     });
@@ -98,14 +97,32 @@ var boxMessage = function(msg) {
 // binds a map marker and infoWindow together on click
 var bindInfoWindow = function(marker, map, infowindow, html) {
     google.maps.event.addListener(marker, 'click', function() {
+        html += '<p><a href="#" class="delete-pin">supprimer</a></p>';
         infowindow.setContent(html);
         infowindow.open(map, marker);
+        $('.delete-pin').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+                url: config.appUrl + '/delete',
+                data: { ref: marker.ref_id },
+                success: function(){
+                    boxMessage('Success deleted');
+                    marker.setMap(null);
+                }
+            })
+
+        });
     });
+
+
+
 };
 
 var infowindow =  new google.maps.InfoWindow({
     content: ''
 });
+
+
 
 // INIT ---------------------- /////////
 function init() {
@@ -183,7 +200,6 @@ function placeMarker(place){
         } );
     })(marker);
 
-
     // not currently used but good to keep track of markers
     markers.push(marker);
 
@@ -192,7 +208,6 @@ function placeMarkers(){
 
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
-        console.log(i);
     }
     markers = [];
 
