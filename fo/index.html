@@ -98,19 +98,23 @@ var maptiler = new google.maps.ImageMapType({
     },
     tileSize: new google.maps.Size(256, 256),
     isPng: true,
-
-    opacity: 1.0
+    opacity: 0.5
 });
 
 function init() {
     var opts = {
         streetViewControl: false,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: new google.maps.LatLng(47.902193, 1.907089),
-        zoom: 18
+        zoom: 18,
+				zoomControlOptions: {
+      		style: google.maps.ZoomControlStyle.SMALL,
+					position: google.maps.ControlPosition.RIGHT_BOTTOM
+    		}
     };
 	map = new google.maps.Map(document.getElementById("map"), opts);
-	map.setMapTypeId('satellite');
-	//map.overlayMapTypes.insertAt(0, maptiler);
+	map.setMapTypeId('roadmap');
+	map.overlayMapTypes.insertAt(0, maptiler);
 
 }
 
@@ -127,8 +131,11 @@ $(document).ready(function(){
 
 
         if($(this).val().length < 3) return;
-
-        $.ajax({
+				
+				if(typeof aj_rq !== 'undefined')
+				        aj_rq.abort();
+				
+        aj_rq = $.ajax({
             dataType: "json",
             url: config.appUrl + '/search',
             data: { s: $(this).val() },
