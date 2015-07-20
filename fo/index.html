@@ -9,13 +9,20 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
+<link rel="apple-touch-icon" href="ios/AppIcon.appiconset/Icon-60@2x.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="ios/AppIcon.appiconset/Icon-60@3x.png" />
+<link rel="apple-touch-icon" sizes="76x76" href="ios/AppIcon.appiconset/Icon-76.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="ios/AppIcon.appiconset/Icon-76@2x.png" />
+<link rel="apple-touch-icon" sizes="58x58" href="ios/AppIcon.appiconset/Icon-Small@2x.png" />
+    
+		
 <style type="text/css">
 html { overflow: hidden; }
 body { overflow: hidden; padding: 0; margin: 0;
 width: 100%; height: 100%; font-family: Trebuchet MS, Trebuchet, Arial, sans-serif; }
 #map { position: absolute; top: 10px; left: 10px; right: 10px; bottom: 15px; overflow: auto; }
 #footer { position: absolute; bottom: 0px; left: 0px; width:100%; height: 12px; overflow: hidden; }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 640px) {
   #map { top:0px; left:0px; width:100%; height:100%;}
 }
 body { background: #f4f4f4;}
@@ -33,28 +40,35 @@ body { background: #f4f4f4;}
     width: 50px;
     white-space: nowrap;
 }
-    .labels.noasso {
-        background-color: red;
-    }
-    .btn-search {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-    }
-    #search {
-        width: 300px;
-        position: fixed;
-        top: 20px;
-        left: 20px;
+.labels.noasso {
+    background-color: red;
+}
+.btn-search {
+    position: fixed;
+    top: 2%;
+    left: 2%;
+}
+#search {
+    width: 300px;
+    position: fixed;
+    top: 20px;
+    left: 20px;
 
-    }
-    #search ul {
-        background-color: #ffffff;
-    }
+}
+#search ul {
+    background-color: #ffffff;
+}
 
-    #results-container {
-        overflow-y: scroll;
-    }
+#results-container {
+    overflow-y: scroll;
+}
+
+@media screen and (max-width: 640px) {
+	form, #results-container, #search {
+		width: 96%;
+		
+	}
+} 
 </style>
 <!--[if lte IE 6]>
 <style type="text/css">
@@ -98,7 +112,7 @@ var maptiler = new google.maps.ImageMapType({
     },
     tileSize: new google.maps.Size(256, 256),
     isPng: true,
-    opacity: 0.5
+    opacity: 1
 });
 
 function init() {
@@ -106,21 +120,35 @@ function init() {
         streetViewControl: false,
 				mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: new google.maps.LatLng(47.902193, 1.907089),
-        zoom: 18,
+        zoom: 17,
 				zoomControlOptions: {
       		style: google.maps.ZoomControlStyle.SMALL,
 					position: google.maps.ControlPosition.RIGHT_BOTTOM
-    		}
+    		},
+				styles: [
+					{
+						featureType: "poi.business",
+						elementType: "labels",
+						stylers: [
+							{
+								visibility: "off"
+							}
+						]
+					}
+				]
     };
 	map = new google.maps.Map(document.getElementById("map"), opts);
+
 	map.setMapTypeId('roadmap');
 	map.overlayMapTypes.insertAt(0, maptiler);
+	
+
+	
 
 }
 
 $(document).ready(function(){
     $('#_s').on('input',function(){
-
         $('#results a').remove();
 
 
@@ -132,15 +160,19 @@ $(document).ready(function(){
 
         if($(this).val().length < 3) return;
 				
-				if(typeof aj_rq !== 'undefined')
-				        aj_rq.abort();
-				
+				//if(typeof aj_rq !== 'undefined')
+				//        aj_rq.abort();
+
+
         aj_rq = $.ajax({
             dataType: "json",
             url: config.appUrl + '/search',
             data: { s: $(this).val() },
-            success: function(places){
-
+						error: function(error) {
+							console.log(error);
+						},
+            success: function(places){	
+							console.log('ddd');
                 for(p in places) {
                     var r = places[p];
 
@@ -177,10 +209,6 @@ $(document).ready(function(){
 
                                         var marker = new MarkerWithLabel({
                                             map: map,
-                                            icon: {
-                                                path: google.maps.SymbolPath.CIRCLE,
-                                                scale: 10
-                                            },
                                             ref_id: place.ref,
                                             position: tmpLatLng,
                                             labelContent: place.ref,
@@ -192,7 +220,7 @@ $(document).ready(function(){
                                         markers.push(marker);
                                         bindInfoWindow(marker, map, infowindow, '<b>'+place.sigle + "</b><br>" + place.objet);
                                         map.setCenter(tmpLatLng);
-                                        map.setZoom(20);
+                                        map.setZoom(18);
 
 
                                         if( $(document).width() < 900 ) {
